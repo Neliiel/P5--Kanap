@@ -1,25 +1,23 @@
 /*Envoie d'une requête au site web pour récupérer les produits*/
 
-fetch("http://localhost:3000/api/products")
-    .then(function(file) {
-        if (file.ok) {
-            return file.json();
-        }
-    })
-    .then(function(jsonlistArticle) {
-        console.log(jsonlistArticle); {
-            for(let jsonArticle of jsonlistArticle){
-                let article = new Article(jsonArticle);
-                document.querySelector(".items").innerHTML += `<a href="./product.html?id=42">
-                                                                    <article>
-                                                                        <img src="${article.imageUrl}" alt="Lorem ipsum dolor sit amet, ${article.name}">
-                                                                        <h3 class="productName">${article.name}</h3>
-                                                                        <p class="productDescription">${article.description}</p>
-                                                                    </article>
-                                                                </a>`;
-            }
-        }
-    })
-    .catch(function(err){
-        //Une erreur est survenue
+let articleUrl = function () {
+    fetch("http://localhost:3000/api/products")
+        .then(response => response.json())
+        .then((data) => { console.log(data);
+
+        let articlesSection = document.querySelector("#items");
+
+        for (i = 0; i < data.length; i++) {
+            let articlesCard = articlesSection.innerHTML += 
+                                                    `<a href="./product.html?id=${data[i]._id}">
+                                                    <article>
+                                                      <img src="${data[i].imageUrl}" alt="${data[i].altTxt}">
+                                                      <h3 class="productName">${data[i].name}</h3>
+                                                      <p class="productDescription">${data[i].description}</p>
+                                                    </article>
+                                                  </a>`;
+         }
     });
+};
+
+articleUrl();

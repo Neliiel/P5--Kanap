@@ -1,7 +1,10 @@
-/*Représentation du format d'un article*/
 
-class Article{
-    constructor(jsonArticle){
-        jsonArticle && Object.assign(this, jsonArticle);
-    }
-}
+
+
+/*Recupération du lien produit*/
+        
+
+
+
+/*Création de la carte produit*/
+
