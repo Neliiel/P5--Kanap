@@ -42,6 +42,7 @@ function printColor(colors) {
 
 productCard();
 
+
 /* Récupération du bouton "Ajouter au panier" */
 
 const button = document.getElementById("addToCart");
@@ -60,9 +61,14 @@ let product = {
     qtyProduct : qty,
 }
 
+if(qty < 1 || qty > 100 || qty === undefined || color === "" || color === undefined) {
+    alert("Veillez selectionner une couleur et une quantité (comprise entre 1 et 100)")
+
+}else{
 /* Ajout du produit dans le localStorage */
 
 let productLinea = JSON.stringify(product);
-localStorage.setItem("product",productLinea);
+localStorage.setItem("product",productLinea);}
+
 });
 
