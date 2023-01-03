@@ -26,6 +26,8 @@ function productCard() {
         });
 };
 
+/* Option couleurs*/
+
 function printColor(colors) {
     let colorDom = document.getElementById("colors");
     colors.forEach(color => { 
@@ -37,4 +39,30 @@ function printColor(colors) {
 }
 
 /*Appel du produit*/
+
 productCard();
+
+/* Récupération du bouton "Ajouter au panier" */
+
+const button = document.getElementById("addToCart");
+
+/* Ecoute du bouton "Ajouter au panier" */
+
+button.addEventListener("click", (e) => {
+    const color = document.getElementById("colors").value;
+    const qty = document.getElementById("quantity").value;
+
+/* Récupération des données utilisateurs */
+
+let product = {
+    idProduct : id,
+    colorProduct : color,
+    qtyProduct : qty,
+}
+
+/* Ajout du produit dans le localStorage */
+
+let productLinea = JSON.stringify(product);
+localStorage.setItem("product",productLinea);
+});
+
