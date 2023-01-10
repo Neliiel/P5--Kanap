@@ -59,7 +59,7 @@ let product = {
 }
 
 /* Récupération des éléments du localStorage */
-const productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
+let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
 
 /* Récupération des données utilisateurs */
 
@@ -74,17 +74,19 @@ const productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
         localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
         
     } else {
-        const foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
+        let foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
 
             if (foundProduct == undefined) {
                 productsInLocalStorage.push(product);
                 localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
 
                 } else {
-
-                   foundProduct.qty = parseINT(foundProduct.qty) += parseINT(product.qty);
-                   localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+                   let newProductsInLocalStorage = [];
+                   newProductsInLocalStorage = productsInLocalStorage.filter(element => element.id != product.id && element.color != product.color);
+                   foundProduct.qty = parseInt(foundProduct.qty) + parseInt(product.qty);
+                   newProductsInLocalStorage.push(foundProduct);
+                   localStorage.setItem("products", JSON.stringify(newProductsInLocalStorage));
             }
         }
     }
-)
+);
