@@ -44,31 +44,47 @@ productCard();
 
 
 /* Récupération du bouton "Ajouter au panier" */
-
 const button = document.getElementById("addToCart");
 
 /* Ecoute du bouton "Ajouter au panier" */
-
 button.addEventListener("click", (e) => {
     const color = document.getElementById("colors").value;
     const qty = document.getElementById("quantity").value;
 
-/* Récupération des données utilisateurs */
-
+/* Création de l'objet produit */
 let product = {
-    idProduct : id,
-    colorProduct : color,
-    qtyProduct : qty,
+    id : id,
+    color : color,
+    qty : qty
 }
 
-if(qty < 1 || qty > 100 || qty === undefined || color === "" || color === undefined) {
-    alert("Veillez selectionner une couleur et une quantité (comprise entre 1 et 100)")
+/* Récupération des éléments du localStorage */
+const productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
 
-}else{
-/* Ajout du produit dans le localStorage */
+/* Récupération des données utilisateurs */
 
-let productLinea = JSON.stringify(product);
-localStorage.setItem("product",productLinea);}
+    /* Mise en place du message d'erreur */
+    if (qty < 1 || qty > 100 || qty === undefined || color === "" || color === undefined) {
+        alert("Veuillez selectionner une couleur et une quantité (comprise entre 1 et 100)")
+    }
+    
+    if (productsInLocalStorage === null) {
+        productsInLocalStorage = [];
+        productsInLocalStorage.push(product);
+        localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+        
+    } else {
+        const foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
 
-});
+            if (foundProduct == undefined) {
+                productsInLocalStorage.push(product);
+                localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
 
+                } else {
+
+                   foundProduct.qty = parseINT(foundProduct.qty) += parseINT(product.qty);
+                   localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+            }
+        }
+    }
+)
