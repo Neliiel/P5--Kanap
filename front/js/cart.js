@@ -1,23 +1,21 @@
 //Récupération des produits du localStorage
-
+ 
 let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
-
-
-//Récupération de l'API
 
 
 //Création du tableau HTML récapitulatif des produits
 
 if (productsInLocalStorage) {
-    
-fetch("http://localhost:3000/api/products")
-.then(response => response.json())
-.then((data) => {
-  console.log(data);
+
+      fetch("http://localhost:3000/api/products")
+      .then(response => response.json())
+      .then((data) => {
+        console.log(data);
 
     for(i = 0; i < productsInLocalStorage.length; i++) {
+
         let productLinea = document.getElementById("cart__items").innerHTML +=
-            `<article class="cart__item" data-id="${data[i]._id}" data-color="${data[i].colors}">
+            `<article class="cart__item" data-id="${productsInLocalStorage[i].id}" data-color="${productsInLocalStorage[i].color}">
             <div class="cart__item__img">
               <img src="${data[i].imageUrl}" alt="Photographie d'un canapé">
             </div>
@@ -38,12 +36,40 @@ fetch("http://localhost:3000/api/products")
               </div>
             </div>
           </article>`
-    }
-    
-})} else {
-    
+    };
+  })} else {
 };
 
+//SUPPRESSION D'UN ARTICLE
+
+
+function removeProduct() {
+
+  // On récupère le bouton à écouter
+  const removeButton = document.querySelectorAll(".deleteItem");
+
+  //on écoute le bouton supprimer
+
+for (let i = 0; i < productsInLocalStorage.length; i++) {
+  removeButton[i].addEventListener('click', (e) => {
+    // On empèche l'action par défaut
+    e.preventDefault();
+
+    //On filtre les produits
+
+    productsInLocalStorage = productsInLocalStorage.filter(el => el.id != productsInLocalStorage[i].id || el.color != productsInLocalStorage[i].color)
+
+    //Modification dans le localStorage
+    localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+
+    //On indique que le produit à bien été supprimé
+    alert("Le produit a été supprimer avec succès");
+  })
+}
+};
+
+//Appel de la fonction Supprimer Article
+removeProduct();
 
 
 
@@ -68,13 +94,8 @@ fetch("http://localhost:3000/api/products")
 
 
 
-
-
-
-
-
-
-/*// On récupère le formulaire HTML
+/*
+// On récupère le formulaire HTML
 let form = document.getElementsByClassName("cart__order__form");
 
 //************FIRST NAME************
