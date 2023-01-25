@@ -4,9 +4,9 @@ export default `
     </div>
     <div class="cart__item__content">
         <div class="cart__item__content__description">
-            <h2>${product.name}</h2>
-            <p>${productInLocalStorage.color}</p>
-            <p>${product.price}</p>
+            <h2 class="cart__item--name"></h2>
+            <p class="cart__item--color"></p>
+            <p class="cart__item--price"></p>
         </div>
         <div class="cart__item__content__settings">
             <div class="cart__item__content__settings__quantity">

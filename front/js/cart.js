@@ -21,6 +21,9 @@ if (productsInLocalStorage) {
     productArticle.classList.add("cart__item")
     productArticle.innerHTML = productTmpl
     productArticle.querySelector(".cart__item__img--img").setAttribute("src", product.imageUrl)
+    productArticle.querySelector(".cart__item--name").innerText = `${product.name}`
+    productArticle.querySelector(".cart__item--color").innerText = `${productInLocalStorage.color}`
+    productArticle.querySelector(".cart__item--price").innerText =` ${product.price}`
     productArticle.querySelector(".itemQuantity").setAttribute("value", productInLocalStorage.qty)
     document.getElementById("cart__items").appendChild(productArticle)
      
