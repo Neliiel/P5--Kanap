@@ -2,18 +2,22 @@ import productTmpl from "./templates/productTmpl.js"
 
 //Récupération des produits du localStorage
  
-const productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
+
+const response = await fetch("http://localhost:3000/api/products")
+const data = await response.json()
+
+
 
 
 //Création du tableau HTML récapitulatif des produits
 
-if (productsInLocalStorage) {
+if (JSON.parse(localStorage.getItem("products"))) {
 
   const response = await fetch("http://localhost:3000/api/products")
   const data = await response.json()
   console.log(data);
-
-  productsInLocalStorage.forEach(productInLocalStorage => {
+  
+  JSON.parse(localStorage.getItem("products")).forEach(productInLocalStorage => {
     const product = data.find(item => item._id === productInLocalStorage.id)
     const productArticle = document.createElement("article")
     productArticle.setAttribute("data-id", productInLocalStorage.id)
@@ -21,22 +25,56 @@ if (productsInLocalStorage) {
     productArticle.classList.add("cart__item")
     productArticle.innerHTML = productTmpl
     productArticle.querySelector(".cart__item__img--img").setAttribute("src", product.imageUrl)
-    productArticle.querySelector(".cart__item--name").innerText = `${product.name}`
-    productArticle.querySelector(".cart__item--color").innerText = `${productInLocalStorage.color}`
-    productArticle.querySelector(".cart__item--price").innerText =` ${product.price}`
+    productArticle.querySelector(".cart__item--name").innerText = product.name
+    productArticle.querySelector(".cart__item--color").innerText = productInLocalStorage.color
+    productArticle.querySelector(".cart__item--price").innerText = `${product.price}€`
     productArticle.querySelector(".itemQuantity").setAttribute("value", productInLocalStorage.qty)
+    productArticle.querySelector(".itemQuantity").addEventListener('change', updateQuantity)
     document.getElementById("cart__items").appendChild(productArticle)
      
   })
 } else {
 };
 
+// Montant total des articles
+
+  // Calcul de la quantité totale
+
+function totalProductQuantity() {
+  const {quantity, price} = JSON.parse(localStorage.getItem("products")).reduce ((acc, cur) => {
+    const product = data.find(item => item._id === cur.id)
+    acc.quantity += +cur.qty
+    acc.price += +product.price * +cur.qty
+    return acc
+  }, {quantity : 0, price : 0})
+  
+  console.log('TotalQuantity: ', quantity)
+  console.log('Total Price: ', price)
+}
+
+totalProductQuantity();
 
 
+// Changer la quantité d'un article
+
+function updateQuantity(event) {
+  
+      event.preventDefault();
+      const cartItem = event.target.closest('.cart__item')
+      const productId = cartItem.getAttribute("data-id");
+      const productColor = cartItem.getAttribute("data-color");
+      const inputValue = event.target.value;
 
 
+  localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).map((product) => {
+    if(product.id === productId && product.color === productColor) {
+      product.qty = +inputValue;
+    }
+    return product
+  })));
 
-
+  totalProductQuantity();
+}
 
 
 
@@ -145,4 +183,5 @@ if(testLastName) {
 } else {
     textLastName.innerHTML = 'Prénom invalide';
 }
-});*/
+});
+*/
