@@ -30,6 +30,7 @@ if (JSON.parse(localStorage.getItem("products"))) {
     productArticle.querySelector(".cart__item--price").innerText = `${product.price}€`
     productArticle.querySelector(".itemQuantity").setAttribute("value", productInLocalStorage.qty)
     productArticle.querySelector(".itemQuantity").addEventListener('change', updateQuantity)
+    productArticle.querySelector(".deleteItem").addEventListener('click', removeProduct)
     document.getElementById("cart__items").appendChild(productArticle)
      
   })
@@ -82,106 +83,105 @@ function updateQuantity(event) {
 //SUPPRESSION D'UN ARTICLE
 
 
-/*function removeProduct() {
-
-  // On récupère le bouton à écouter
-  let removeButton = document.querySelectorAll(".deleteItem");
-
-  //on écoute le bouton supprimer
-
-  for (let i = 0; i < productsInLocalStorage.length; i++) {
-    removeButton[i].addEventListener('click', (e) => {
-      // On empèche l'action par défaut
-      e.preventDefault();
-
-      //On filtre les produits
-
-      productsInLocalStorage = productsInLocalStorage.filter(el => el.id != productsInLocalStorage[i].id || el.color != productsInLocalStorage[i].color)
-
-      //Modification dans le localStorage
-      localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
-
-      //On indique que le produit à bien été supprimé
-      alert("Le produit a été supprimer avec succès");
-    })
-  };
-};
-
-//Appel de la fonction Supprimer Article
-removeProduct();
+function removeProduct(event) {
+  
+  const cartItem = event.target.closest('.cart__item')
+  const productId = cartItem.getAttribute("data-id");
+  const productColor = cartItem.getAttribute("data-color");
+  
 
 
+localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
+if(product.id != productId && product.color != productColor) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-// On récupère le formulaire HTML
-let form = document.getElementsByClassName("cart__order__form");
-
-//************FIRST NAME************
-
-//On écoute la modification du firstName
-form.firstName.addEventListener("change", function() {
-    validFirstName(this);
-
-//Création de la RegExp pour le firstName
-const validFirstName = function(inputfirstName) {
-    let firstNameRegExp = new RegExp (
-        '^[a-zA-Z-]+$', 'g'
-    );
 }
+return product
+})));
 
-//Test du RegExp firstName
-let testFirstName = firstNameRegExp.test(inputfirstName.value);
-let textFirstName = inputfirstName.getElementsById("firstNameErrorMsg");
+totalProductQuantity();
+} 
 
-if(testFirstName) {
-    textFirstName.innerHTML = 'Prénom valide';
-} else {
-    textFirstName.innerHTML = 'Prénom invalide';
-}
+
+
+// VALIDATION FORMULAIRE AVEC REGEX
+
+// Création des expressions régulières
+
+const textRegex = /^[a-zA-Z-]+$/
+const addressRegex = /^[0-9]+[a-zA-Z-]+$/
+const cityRegex = /^[a-zA-Z-]+$/
+const emailRegex = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]+$/
+
+// Récupération des éléments à écouter
+
+let inputFirstName = document.getElementById("firstName")
+let inputLastName = document.getElementById("lastName")
+let inputAddress = document.getElementById("address")
+let inputCity = document.getElementById("city")
+let inputEmail= document.getElementById("email")
+
+//Récupération pour les messages d'erreurs
+
+let firstNameErrorMsg = document.getElementById("firstNameErrorMsg")
+let lastNameErrorMsg = document.getElementById("lastNameErrorMsg")
+let addressErrorMsg = document.getElementById("addressErrorMsg")
+let cityErrorMsg = document.getElementById("cityErrorMsg")
+let emailErrorMsg = document.getElementById("emailErrorMsg")
+
+// Ecoute du contenu Prénom
+
+inputFirstName.addEventListener('change', function() {
+  let checkFirstName = textRegex.test(inputFirstName.value);
+
+  if (checkFirstName) {
+    firstNameErrorMsg.innerText = '';
+  } else {
+    firstNameErrorMsg.innerText = 'Veuillez indiquer un prénom valide'
+  }
 });
 
-//************LAST NAME************
+// Ecoute du contenu Nom
 
-//On écoute la modification du lastName
-form.lastName.addEventListener("change", function() {
-    validLastName(this);
+inputLastName.addEventListener('change', function() {
+  let checkLastName = textRegex.test(inputLastName.value);
 
-//Création de la RegExp pour le lastName
-const validLastName = function(inputlastName) {
-    let lastNameRegExp = new RegExp (
-        '^[a-zA-Z-]+$', 'g'
-    );
-}
-
-//Test du RegExp firstName
-let testLastName = lastNameRegExp.test(inputlastName.value);
-let textLastName = inputlastName.getElementsById("lastNameErrorMsg");
-
-if(testLastName) {
-    textLastName.innerHTML = 'Prénom valide';
-} else {
-    textLastName.innerHTML = 'Prénom invalide';
-}
+  if (checkLastName) {
+    lastNameErrorMsg.innerText = '';
+  } else {
+    lastNameErrorMsg.innerText = 'Veuillez indiquer un nom valide'
+  }
 });
-*/
+
+//Ecoute du contenu de l'adresse
+
+inputAddress.addEventListener('change', function() {
+  let checkaddress = addressRegex.test(inputAddress.value);
+
+  if (checkaddress) {
+    addressErrorMsg.innerText = '';
+  } else {
+    addressErrorMsg.innerText = 'Veuillez indiquer une adresse valide'
+  }
+});
+
+// Ecoute du contenu de la ville
+
+inputCity.addEventListener('change', function() {
+  let checkCity = cityRegex.test(inputCity.value);
+
+  if (checkCity) {
+    cityErrorMsg.innerText = '';
+  } else {
+    cityErrorMsg.innerText = 'Veuillez indiquer une ville valide'
+  }
+});
+
+inputEmail.addEventListener('change', function() {
+  let checkEmail = emailRegex.test(inputEmail.value);
+
+  if (checkEmail) {
+    emailErrorMsg.innerText = '';
+  } else {
+    emailErrorMsg.innerText = 'Veuillez indiquer une adresse mail valide'
+  }
+});
