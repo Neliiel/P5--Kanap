@@ -1,15 +1,13 @@
+// Importation du template
+
 import productTmpl from "./templates/productTmpl.js"
 
-//Récupération des produits du localStorage
+// Récupération des produits du localStorage
  
-
 const response = await fetch("http://localhost:3000/api/products")
 const data = await response.json()
 
-
-
-
-//Création du tableau HTML récapitulatif des produits
+// Création du tableau HTML récapitulatif des produits
 
 if (JSON.parse(localStorage.getItem("products"))) {
 
@@ -32,14 +30,13 @@ if (JSON.parse(localStorage.getItem("products"))) {
     productArticle.querySelector(".itemQuantity").addEventListener('change', updateQuantity)
     productArticle.querySelector(".deleteItem").addEventListener('click', removeProduct)
     document.getElementById("cart__items").appendChild(productArticle)
-     
   })
 } else {
 };
 
 // Montant total des articles
 
-  // Calcul de la quantité totale
+  // Calcul de la quantité totale et du prix total
 
 function totalProductQuantity() {
   const {quantity, price} = JSON.parse(localStorage.getItem("products")).reduce ((acc, cur) => {
@@ -51,20 +48,22 @@ function totalProductQuantity() {
   
   console.log('TotalQuantity: ', quantity)
   console.log('Total Price: ', price)
+
+  document.getElementById("totalQuantity").innerText = quantity;
+  document.getElementById("totalPrice").innerText = price;
 }
 
 totalProductQuantity();
-
 
 // Changer la quantité d'un article
 
 function updateQuantity(event) {
   
-      event.preventDefault();
-      const cartItem = event.target.closest('.cart__item')
-      const productId = cartItem.getAttribute("data-id");
-      const productColor = cartItem.getAttribute("data-color");
-      const inputValue = event.target.value;
+  event.preventDefault();
+  const cartItem = event.target.closest('.cart__item')
+  const productId = cartItem.getAttribute("data-id");
+  const productColor = cartItem.getAttribute("data-color");
+  const inputValue = event.target.value;
 
 
   localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).map((product) => {
@@ -77,11 +76,7 @@ function updateQuantity(event) {
   totalProductQuantity();
 }
 
-
-
-
 //SUPPRESSION D'UN ARTICLE
-
 
 function removeProduct(event) {
   
@@ -89,19 +84,15 @@ function removeProduct(event) {
   const productId = cartItem.getAttribute("data-id");
   const productColor = cartItem.getAttribute("data-color");
   
+  localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
+  if(product.id != productId && product.color != productColor) {
 
-
-localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
-if(product.id != productId && product.color != productColor) {
-
-}
-return product
-})));
+  }
+  return product
+  })));
 
 totalProductQuantity();
 } 
-
-
 
 // VALIDATION FORMULAIRE AVEC REGEX
 
@@ -175,6 +166,8 @@ inputCity.addEventListener('change', function() {
     cityErrorMsg.innerText = 'Veuillez indiquer une ville valide'
   }
 });
+
+// Ecoute du contenu de l'email
 
 inputEmail.addEventListener('change', function() {
   let checkEmail = emailRegex.test(inputEmail.value);
