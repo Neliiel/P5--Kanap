@@ -98,9 +98,9 @@ totalProductQuantity();
 
 // Création des expressions régulières
 
-const textRegex = /^[a-zA-Z-]+$/
-const addressRegex = /^[0-9]+[a-zA-Z-]+$/
-const cityRegex = /^[a-zA-Z-]+$/
+const textRegex = /^[a-zA-Z-\s]+$/
+const addressRegex = /^[a-zA-Z0-9\s]+$/
+const cityRegex = /^[a-zA-Z-\s]+$/
 const emailRegex = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]+$/
 
 // Récupération des éléments à écouter
