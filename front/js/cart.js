@@ -2,6 +2,8 @@
 
 import productTmpl from "./templates/productTmpl.js"
 
+let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
+
 // Récupération des produits du localStorage
  
 const response = await fetch("http://localhost:3000/api/products")
@@ -9,8 +11,8 @@ const data = await response.json()
 
 // Création du tableau HTML récapitulatif des produits
 
-if (JSON.parse(localStorage.getItem("products"))) {
-
+const displayProductInCart = async() => {
+  document.getElementById("cart__items").innerHTML = ''
   const response = await fetch("http://localhost:3000/api/products")
   const data = await response.json()
   console.log(data);
@@ -31,6 +33,11 @@ if (JSON.parse(localStorage.getItem("products"))) {
     productArticle.querySelector(".deleteItem").addEventListener('click', removeProduct)
     document.getElementById("cart__items").appendChild(productArticle)
   })
+}
+if (JSON.parse(localStorage.getItem("products"))) {
+
+displayProductInCart();
+
 } else {
 };
 
@@ -85,18 +92,18 @@ function removeProduct(event) {
   const productColor = cartItem.getAttribute("data-color");
   
   localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
-  if(product.id != productId && product.color != productColor) {
-
-  }
-  return product
+  return product.id != productId && product.color != productColor
   })));
 
 totalProductQuantity();
+displayProductInCart();
 } 
 
 // VALIDATION FORMULAIRE AVEC REGEX
 
 // Création des expressions régulières
+
+// /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]+$/ 
 
 const textRegex = /^[a-zA-Z-\s]+$/
 const addressRegex = /^[a-zA-Z0-9\s]+$/
@@ -121,60 +128,118 @@ let emailErrorMsg = document.getElementById("emailErrorMsg")
 
 // Ecoute du contenu Prénom
 
-inputFirstName.addEventListener('change', function() {
+const validFirstName = inputFirstName.addEventListener('change', function() {
   let checkFirstName = textRegex.test(inputFirstName.value);
 
   if (checkFirstName) {
     firstNameErrorMsg.innerText = '';
+    return true
   } else {
     firstNameErrorMsg.innerText = 'Veuillez indiquer un prénom valide'
+    return false
   }
 });
 
 // Ecoute du contenu Nom
 
-inputLastName.addEventListener('change', function() {
+const validLastName = inputLastName.addEventListener('change', function() {
   let checkLastName = textRegex.test(inputLastName.value);
 
   if (checkLastName) {
     lastNameErrorMsg.innerText = '';
+    return true
   } else {
     lastNameErrorMsg.innerText = 'Veuillez indiquer un nom valide'
+    return false
   }
 });
 
 //Ecoute du contenu de l'adresse
 
-inputAddress.addEventListener('change', function() {
+const validAdress = inputAddress.addEventListener('change', function() {
   let checkaddress = addressRegex.test(inputAddress.value);
 
   if (checkaddress) {
     addressErrorMsg.innerText = '';
+    return true
   } else {
     addressErrorMsg.innerText = 'Veuillez indiquer une adresse valide'
+    return false
   }
 });
 
 // Ecoute du contenu de la ville
 
-inputCity.addEventListener('change', function() {
+const validCity = inputCity.addEventListener('change', function() {
   let checkCity = cityRegex.test(inputCity.value);
 
   if (checkCity) {
     cityErrorMsg.innerText = '';
+    return true
   } else {
     cityErrorMsg.innerText = 'Veuillez indiquer une ville valide'
+    return false
   }
 });
 
 // Ecoute du contenu de l'email
 
-inputEmail.addEventListener('change', function() {
+const validEmail = inputEmail.addEventListener('change', function() {
   let checkEmail = emailRegex.test(inputEmail.value);
 
   if (checkEmail) {
     emailErrorMsg.innerText = '';
+    return true
   } else {
     emailErrorMsg.innerText = 'Veuillez indiquer une adresse mail valide'
+    return false
   }
 });
+
+// COMMANDER
+
+// Récupération du bouton commander
+
+let submitButton = document.getElementById("order");
+
+// On écoute le bouton commander
+
+submitButton.addEventListener('submit', (event) => {
+  event.preventDefault();
+  if(productsInLocalStorage === null || productsInLocalStorage === []) {
+    alert("Votre panier est vide!");
+  // On vérifie que les champs sont correctement rempli avec Regex
+  } else if(validFirstName && validLastName && validAdress && validCity && validEmail) {
+    // on récupère l'id des produits du local storage
+    productsInLocalStorage.forEach(productInLocalStorage => {
+      const productId = data.find(item => item._id === productInLocalStorage.id)
+    });
+    // on crée une constante pour mettre les infos produits et contacts
+    const order = {
+      contact: {
+        firstName: inputFirstName.value,
+        lastName: inputLastName.value,
+        address: inputAddress.value,
+        city: inputCity.value,
+        email: inputEmail.value,
+      },
+      products: {
+        'product-ID': productId,
+      },
+    }
+    // On envoie les données à l'API
+    const submitOrder = async() => {
+    let response = await fetch('http://localhost:3000/api/products/order', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(order)
+    });
+    
+    let result = await response.json();
+    alert(result.message);
+  }
+  } else {
+    alert ("Veuillez remplir correctement le formulaire");
+  }});
