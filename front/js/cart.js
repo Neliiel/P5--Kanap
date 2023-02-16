@@ -103,12 +103,10 @@ displayProductInCart();
 
 // Création des expressions régulières
 
-// /^[a-zA-Z0-9áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ._\s-]+$/ 
-
 const textRegex = /^[a-zA-Z-\s]+$/
-const addressRegex = /^[a-zA-Z0-9\s]+$/
+const addressRegex = /^[a-zA-Z0-9-\s]+$/
 const cityRegex = /^[a-zA-Z-\s]+$/
-const emailRegex = /^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]+$/
+const emailRegex = /^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]+$/
 
 // Récupération des éléments à écouter
 
@@ -127,73 +125,80 @@ let cityErrorMsg = document.getElementById("cityErrorMsg")
 let emailErrorMsg = document.getElementById("emailErrorMsg")
 
 // Ecoute du contenu Prénom
+let fieldsValid = {
+  firstName : false,
+  lastName : false,
+  address : false,
+  city : false,
+  email : false,
+}
 
-const validFirstName = inputFirstName.addEventListener('change', function() {
+ inputFirstName.addEventListener('change', function() {
   let checkFirstName = textRegex.test(inputFirstName.value);
 
   if (checkFirstName) {
     firstNameErrorMsg.innerText = '';
-    return true
   } else {
     firstNameErrorMsg.innerText = 'Veuillez indiquer un prénom valide'
-    return false
   }
+
+  fieldsValid.firstName = checkFirstName
 });
 
 // Ecoute du contenu Nom
 
-const validLastName = inputLastName.addEventListener('change', function() {
+inputLastName.addEventListener('change', function() {
   let checkLastName = textRegex.test(inputLastName.value);
 
   if (checkLastName) {
     lastNameErrorMsg.innerText = '';
-    return true
   } else {
     lastNameErrorMsg.innerText = 'Veuillez indiquer un nom valide'
-    return false
   }
+
+  fieldsValid.lastName = checkLastName
 });
 
 //Ecoute du contenu de l'adresse
 
-const validAdress = inputAddress.addEventListener('change', function() {
+inputAddress.addEventListener('change', function() {
   let checkaddress = addressRegex.test(inputAddress.value);
 
   if (checkaddress) {
     addressErrorMsg.innerText = '';
-    return true
   } else {
     addressErrorMsg.innerText = 'Veuillez indiquer une adresse valide'
-    return false
   }
+
+  fieldsValid.address = checkaddress
 });
 
 // Ecoute du contenu de la ville
 
-const validCity = inputCity.addEventListener('change', function() {
+inputCity.addEventListener('change', function() {
   let checkCity = cityRegex.test(inputCity.value);
 
   if (checkCity) {
-    cityErrorMsg.innerText = '';
-    return true
+    cityErrorMsg.innerText = ''
   } else {
     cityErrorMsg.innerText = 'Veuillez indiquer une ville valide'
-    return false
   }
+
+  fieldsValid.city = checkCity
 });
 
 // Ecoute du contenu de l'email
 
-const validEmail = inputEmail.addEventListener('change', function() {
+inputEmail.addEventListener('change', function() {
   let checkEmail = emailRegex.test(inputEmail.value);
 
   if (checkEmail) {
     emailErrorMsg.innerText = '';
-    return true
   } else {
     emailErrorMsg.innerText = 'Veuillez indiquer une adresse mail valide'
-    return false
   }
+
+  fieldsValid.email = checkEmail
 });
 
 // COMMANDER
@@ -204,17 +209,13 @@ let submitButton = document.getElementById("order");
 
 // On écoute le bouton commander
 
-submitButton.addEventListener('submit', (event) => {
+submitButton.addEventListener('click', async (event) => {
   event.preventDefault();
-  if(productsInLocalStorage === null || productsInLocalStorage === []) {
+  if(!productsInLocalStorage?.length) {
     alert("Votre panier est vide!");
   // On vérifie que les champs sont correctement rempli avec Regex
-  } else if(validFirstName && validLastName && validAdress && validCity && validEmail) {
-    // on récupère l'id des produits du local storage
-    productsInLocalStorage.forEach(productInLocalStorage => {
-      const productId = data.find(item => item._id === productInLocalStorage.id)
-    });
-    // on crée une constante pour mettre les infos produits et contacts
+  } else if(fieldsValid.firstName && fieldsValid.lastName && fieldsValid.address && fieldsValid.city && fieldsValid.email) {
+    // On crée un objet pour mettre les infos produits et contacts
     const order = {
       contact: {
         firstName: inputFirstName.value,
@@ -223,12 +224,9 @@ submitButton.addEventListener('submit', (event) => {
         city: inputCity.value,
         email: inputEmail.value,
       },
-      products: {
-        'product-ID': productId,
-      },
+      products: productsInLocalStorage.map(item => item.id)
     }
     // On envoie les données à l'API
-    const submitOrder = async() => {
     let response = await fetch('http://localhost:3000/api/products/order', {
       method: 'POST',
       headers: {
@@ -238,8 +236,9 @@ submitButton.addEventListener('submit', (event) => {
     });
     
     let result = await response.json();
-    alert(result.message);
-  }
+    console.log(result)
+    alert(result.orderId);
   } else {
     alert ("Veuillez remplir correctement le formulaire");
-  }});
+  }
+});
