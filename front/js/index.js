@@ -1,16 +1,16 @@
-/*Envoie d'une requête au site web pour récupérer les produits*/
+// ****** AFFICHAGE DES PRODUITS SUR LA PAGE D'ACCUEIL ****** 
 
-/*Recherche de l'api*/
+// On appel l'API
 let articleUrl = function () {
   fetch("http://localhost:3000/api/products")
     .then(response => response.json())
     .then((data) => {
       console.log(data);
 
-      /*Modification du HTML id=items*/
+      // On récupère la section item
       let articlesSection = document.querySelector("#items");
 
-      /*Ajout des produits dans le HTML*/
+      // On ajoute les produits dans le HTML
       for (i = 0; i < data.length; i++) {
         let articlesCard = articlesSection.innerHTML +=
           `<a href="./product.html?id=${data[i]._id}">
@@ -24,5 +24,5 @@ let articleUrl = function () {
     });
 };
 
-/*Appel des produits sur la page d'accueil*/
+// On appel les produits sur la page d'accueil
 articleUrl();
