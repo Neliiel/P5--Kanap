@@ -1,4 +1,4 @@
-/*Recupération du produit via l'id*/
+// ****** AFFICHAGE DU BON PRODUIT VIA L'ID ******
 
 let str = window.location.href;
 let url = new URL(str)
@@ -6,7 +6,7 @@ let id = url.searchParams.get("id");
 console.log(id);
 let idUrl = "http://localhost:3000/api/products/" + id;
 
-/*Création de la carte produit*/
+// Création de la carte produit
 
 function productCard() {
     fetch(idUrl)
@@ -26,7 +26,7 @@ function productCard() {
         });
 };
 
-/* Option couleurs*/
+// On met en place le choix de la couleur
 
 function printColor(colors) {
     let colorDom = document.getElementById("colors");
@@ -38,41 +38,42 @@ function printColor(colors) {
     });
 }
 
-/*Appel du produit*/
+// On appel le produit
 
 productCard();
 
+// ****** AJOUTER AU PANIER ******
 
-/* Récupération du bouton "Ajouter au panier" */
+// Récupération du bouton "Ajouter au panier" 
 const button = document.getElementById("addToCart");
 
-/* Ecoute du bouton "Ajouter au panier" */
+// On écoute le bouton "Ajouter au panier" 
 button.addEventListener("click", (e) => {
     const color = document.getElementById("colors").value;
     const qty = document.getElementById("quantity").value;
 
-/* Création de l'objet produit */
+// Création de l'objet produit 
 let product = {
     id : id,
     color : color,
     qty : qty
 }
 
-/* Récupération des éléments du localStorage */
+// Récupération des éléments du localStorage 
 let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
 
-/* Récupération des données utilisateurs */
-
-    /* Mise en place du message d'erreur */
+// Récupération des données utilisateurs 
+    // On vérifie que la quantité et la couleur sont bien indiqué
     if (qty < 1 || qty > 100 || qty === undefined || color === "" || color === undefined) {
         alert("Veuillez selectionner une couleur et une quantité (comprise entre 1 et 100)")
     }
     
+    // Si le Local Storage est vide on crée un tableau vide
     if (productsInLocalStorage === null) {
         productsInLocalStorage = [];
         productsInLocalStorage.push(product);
         localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
-        
+    // Sinon on cherche le produit
     } else {
         let foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
 
