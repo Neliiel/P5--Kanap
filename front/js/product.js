@@ -86,8 +86,9 @@ let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
                    newProductsInLocalStorage = productsInLocalStorage.filter(element => element.id != product.id && element.color != product.color);
                    foundProduct.qty = parseInt(foundProduct.qty) + parseInt(product.qty);
                    newProductsInLocalStorage.push(foundProduct);
-                   localStorage.setItem("products", JSON.stringify(newProductsInLocalStorage));
+                   localStorage.setItem("products", JSON.stringify(newProductsInLocalStorage));   
             }
         }
+        alert("Produit(s) ajouté(s) au panier avec succès!")
     }
 );
