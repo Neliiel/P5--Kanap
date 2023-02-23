@@ -15,7 +15,6 @@ const displayProductInCart = async() => {
   document.getElementById("cart__items").innerHTML = ''
   const response = await fetch("http://localhost:3000/api/products")
   const data = await response.json()
-  console.log(data);
   
   JSON.parse(localStorage.getItem("products")).forEach(productInLocalStorage => {
     const product = data.find(item => item._id === productInLocalStorage.id)
@@ -89,12 +88,14 @@ function removeProduct(event) {
   
   const cartItem = event.target.closest('.cart__item')
   const productId = cartItem.getAttribute("data-id");
+  console.log(JSON.parse(localStorage.getItem("products")))
   const productColor = cartItem.getAttribute("data-color");
+  console.log(productColor)
   
   localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
-  return product.id != productId && product.color != productColor
+  return product.id != productId || product.color != productColor
   })));
-
+  console.log(JSON.parse(localStorage.getItem("products")))
 totalProductQuantity();
 displayProductInCart();
 } 
@@ -103,9 +104,9 @@ displayProductInCart();
 
 // Création des expressions régulières
 
-const textRegex = /^[a-zA-Z-\s]+$/
-const addressRegex = /^[a-zA-Z0-9-\s]+$/
-const cityRegex = /^[a-zA-Z-\s]+$/
+const textRegex = /^[a-zA-ZÀ-Ýà-ÿ-\s]+$/
+const addressRegex = /^[a-zA-ZÀ-Ýà-ÿ0-9-\s]+$/
+const cityRegex = /^[a-zA-ZÀ-Ýà-ÿ-\s]+$/
 const emailRegex = /^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]+$/
 
 // Récupération des éléments à écouter
@@ -114,7 +115,7 @@ let inputFirstName = document.getElementById("firstName")
 let inputLastName = document.getElementById("lastName")
 let inputAddress = document.getElementById("address")
 let inputCity = document.getElementById("city")
-let inputEmail= document.getElementById("email")
+let inputEmail = document.getElementById("email")
 
 //Récupération pour les messages d'erreurs
 
@@ -237,7 +238,7 @@ submitButton.addEventListener('click', async (event) => {
     
     let result = await response.json();
     console.log(result)
-    alert(result.orderId);
+    alert(`Confirmation de votre commande n°${result.orderId}`);
   } else {
     alert ("Veuillez remplir correctement le formulaire");
   }
