@@ -66,29 +66,40 @@ let productsInLocalStorage = JSON.parse(localStorage.getItem("products"));
     // On vérifie que la quantité et la couleur sont bien indiqué
     if (qty < 1 || qty > 100 || qty === undefined || color === "" || color === undefined) {
         alert("Veuillez selectionner une couleur et une quantité (comprise entre 1 et 100)")
-    }
-    
-    // Si le Local Storage est vide on crée un tableau vide
-    if (productsInLocalStorage === null) {
-        productsInLocalStorage = [];
-        productsInLocalStorage.push(product);
-        localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
-    // Sinon on cherche le produit
     } else {
-        let foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
+        // Si le Local Storage est vide on crée un tableau vide
+        if (productsInLocalStorage === null) {
+            productsInLocalStorage = [];
+            productsInLocalStorage.push(product);
+            localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+            alert("Produit(s) ajouté(s) au panier avec succès!");
+        // Sinon on cherche le produit
+        } else {
+            let foundProduct = productsInLocalStorage.find(element => element.id == product.id && element.color == product.color);
 
-            if (foundProduct == undefined) {
-                productsInLocalStorage.push(product);
-                localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+                if (foundProduct == undefined) {
+                    productsInLocalStorage.push(product);
+                    localStorage.setItem("products", JSON.stringify(productsInLocalStorage));
+                    alert("Produit(s) ajouté(s) au panier avec succès!");
 
                 } else {
-                   let newProductsInLocalStorage = [];
-                   newProductsInLocalStorage = productsInLocalStorage.filter(element => element.id != product.id && element.color != product.color);
-                   foundProduct.qty = parseInt(foundProduct.qty) + parseInt(product.qty);
-                   newProductsInLocalStorage.push(foundProduct);
-                   localStorage.setItem("products", JSON.stringify(newProductsInLocalStorage));   
+                    let newProductsInLocalStorage = [];
+                    newProductsInLocalStorage = productsInLocalStorage.filter(element => element.id != product.id && element.color != product.color);
+                
+                    let newQuantity = parseInt(foundProduct.qty) + parseInt(product.qty);
+
+                        if (newQuantity > 100) {
+                            alert("Erreur : total de la quantité supérieur à 100");
+
+                        } else {
+                        foundProduct.qty = newQuantity;
+                        newProductsInLocalStorage.push(foundProduct);
+                        localStorage.setItem("products", JSON.stringify(newProductsInLocalStorage));
+                        alert("Produit(s) ajouté(s) au panier avec succès!")
+                        } 
+                }
             }
+            
         }
-        alert("Produit(s) ajouté(s) au panier avec succès!")
     }
 );
