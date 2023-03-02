@@ -3,7 +3,6 @@
 let str = window.location.href;
 let url = new URL(str)
 let id = url.searchParams.get("id");
-console.log(id);
 let idUrl = "http://localhost:3000/api/products/" + id;
 
 // Création de la carte produit
@@ -12,7 +11,6 @@ function productCard() {
     fetch(idUrl)
         .then((response) => response.json())
         .then((data) => {
-            console.log(data);
 
             let img = document.querySelector(".item__img").innerHTML +=
                 `<img src="${data.imageUrl}" alt="${data.altTxt}">`;

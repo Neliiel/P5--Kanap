@@ -45,15 +45,12 @@ displayProductInCart();
   // Calcul de la quantité totale et du prix total
 
 function totalProductQuantity() {
-  const {quantity, price} = JSON.parse(localStorage.getItem("products")).reduce ((acc, cur) => {
+  const {quantity, price} = JSON.parse(localStorage.getItem("products"))?.reduce ((acc, cur) => {
     const product = data.find(item => item._id === cur.id)
     acc.quantity += +cur.qty
     acc.price += +product.price * +cur.qty
     return acc
-  }, {quantity : 0, price : 0})
-  
-  console.log('TotalQuantity: ', quantity)
-  console.log('Total Price: ', price)
+  }, {quantity : 0, price : 0})??{quantity : 0, price : 0};
 
   document.getElementById("totalQuantity").innerText = quantity;
   document.getElementById("totalPrice").innerText = price;
@@ -88,14 +85,12 @@ function removeProduct(event) {
   
   const cartItem = event.target.closest('.cart__item')
   const productId = cartItem.getAttribute("data-id");
-  console.log(JSON.parse(localStorage.getItem("products")))
   const productColor = cartItem.getAttribute("data-color");
-  console.log(productColor)
-  
+ 
   localStorage.setItem("products", JSON.stringify(JSON.parse(localStorage.getItem("products")).filter((product) => {
   return product.id != productId || product.color != productColor
   })));
-  console.log(JSON.parse(localStorage.getItem("products")))
+
 totalProductQuantity();
 displayProductInCart();
 } 
@@ -237,8 +232,7 @@ submitButton.addEventListener('click', async (event) => {
     });
     
     let result = await response.json();
-    console.log(result)
-    alert(`Confirmation de votre commande n°${result.orderId}`);
+    document.location.href = `./confirmation.html?orderId=${result.orderId}`;
   } else {
     alert ("Veuillez remplir correctement le formulaire");
   }

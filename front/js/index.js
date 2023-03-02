@@ -5,8 +5,7 @@ let articleUrl = function () {
   fetch("http://localhost:3000/api/products")
     .then(response => response.json())
     .then((data) => {
-      console.log(data);
-
+      
       // On récupère la section item
       let articlesSection = document.querySelector("#items");
 
